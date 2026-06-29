@@ -1,0 +1,31 @@
+name: cocotb
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/builderdev212/cocotb-runner:latest
+    steps:
+      - name: Pull Repository
+        uses: actions/checkout@v7
+      - name: Run Tests
+        run: |
+          cd verif/cocotb
+          pytest --junitxml=test-results.xml
+      - name: Generate Coverage Report
+        run: |
+          cd verif/cocotb/
+          bash scripts/coverage.sh
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v7
+        with:
+          name: junit
+          path: verif/cocotb/test-results.xml
+      - name: Upload Cobertura coverage
+        uses: actions/upload-code-coverage@v1
+        with:
+          file: verif/cocotb/coverage.xml
+          language: Verilog
+          label: code-coverage/verilator
