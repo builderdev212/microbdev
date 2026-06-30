@@ -14,6 +14,13 @@ jobs:
           cd verif/cocotb
           pytest --junitxml=test-results.xml
           bash scripts/coverage.sh
+      - name: Publish Test Report
+        if: always()
+        uses: dorny/test-reporter@v2
+        with:
+          name: Cocotb Tests
+          path: verif/cocotb/test-results.xml
+          reporter: java-junit
       - name: Upload Test Results
         uses: actions/upload-artifact@v7
         with:
