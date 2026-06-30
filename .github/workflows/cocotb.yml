@@ -1,6 +1,9 @@
 name: cocotb
 on:
   push:
+    paths:
+      - 'cores/*'
+      - 'verif/cocotb/tests/*'
   pull_request:
 jobs:
   test:
