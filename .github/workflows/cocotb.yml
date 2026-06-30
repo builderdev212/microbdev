@@ -26,14 +26,18 @@ jobs:
           name: Cocotb Tests
           path: verif/cocotb/test-results.xml
           reporter: java-junit
-      - name: Upload Test Results
+      - name: Publish Coverage Report
+        if: always()
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: verif/cocotb/coverage.xml
+          disable_search: true
+      - name: Upload Results
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: junit
-          path: verif/cocotb/test-results.xml
-      - name: Upload Test Coverage
-        if: always()
-        uses: codecov/codecov-action@v7
-        with:
-          files: verif/cocotb/coverage.xml
+          path: |
+            verif/cocotb/test-results.xml
+            verif/cocotb/coverage.xml
