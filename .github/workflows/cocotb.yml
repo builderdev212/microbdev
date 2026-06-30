@@ -1,0 +1,49 @@
+name: cocotb
+on:
+  push:
+    paths:
+      - '**/*.v'
+      - '**/*.sv'
+      - '**/*.vh'
+      - '**/*.svh'
+      - '**/*.py'
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: ghcr.io/builderdev212/cocotb-runner:latest
+    steps:
+      - name: Pull Repository
+        uses: actions/checkout@v7
+      - name: Mark Repository as Safe
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Run Tests
+        run: |
+          cd verif/cocotb
+          pytest --junitxml=test-results.xml
+      - name: Generate Coverage
+        run: |
+          cd verif/cocotb
+          bash scripts/coverage.sh
+      - name: Publish Test Report
+        if: always()
+        uses: dorny/test-reporter@v3
+        with:
+          name: Cocotb Tests
+          path: verif/cocotb/test-results.xml
+          reporter: java-junit
+      - name: Publish Coverage Report
+        if: always()
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: verif/cocotb/coverage.xml
+          disable_search: true
+      - name: Upload Results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results
+          path: |
+            verif/cocotb/test-results.xml
+            verif/cocotb/coverage.xml
