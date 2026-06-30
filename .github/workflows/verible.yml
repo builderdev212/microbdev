@@ -1,4 +1,4 @@
-name: Verilog Checks
+name: verible
 on:
   push:
     paths:

@@ -1,9 +1,8 @@
 import os
 import shutil
-
+import pytest
 import cocotb
 from cocotb.triggers import RisingEdge
-import pytest
 from cocotb_tools.runner import get_runner
 from filelock import FileLock
 from tb import TB
@@ -17,7 +16,9 @@ async def test_counter(dut):
     for i in range(10000):
         assert int(dut.counter.value) == i
         tb.log.info(f"Count: {int(dut.counter.value)}")
-        assert tb.led.value == (int(dut.counter.value) >> (tb.counter_width_param-tb.led_count_param))
+        assert tb.led.value == (
+            int(dut.counter.value) >> (tb.counter_width_param - tb.led_count_param)
+        )
         await RisingEdge(tb.clk)
 
 
@@ -26,13 +27,14 @@ base_dir = os.path.abspath(os.path.join(tests_dir, "..", "..", "..", "..", "..")
 rtl_dir = os.path.abspath(os.path.join(base_dir, "cores", "basys3"))
 dut = "led_shift_reg"
 
+
 _BUILT_BUILDS = {}
 COCOTB_TESTCASES = ["test_counter"]
 PARAMETER_SETS = [
     {
-        "NUM":0,
-        "LED_COUNT":16,
-        "COUNTER_WIDTH":32,
+        "NUM": 0,
+        "LED_COUNT": 16,
+        "COUNTER_WIDTH": 32,
     },
 ]
 
