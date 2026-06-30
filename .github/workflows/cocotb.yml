@@ -2,8 +2,8 @@ name: cocotb
 on:
   push:
     paths:
-      - 'cores/*'
-      - 'verif/cocotb/tests/*'
+      - '**/cores/*'
+      - '**/verif/cocotb/tests/*'
   pull_request:
 jobs:
   test:
