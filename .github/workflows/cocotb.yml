@@ -23,9 +23,7 @@ jobs:
         with:
           name: junit
           path: verif/cocotb/test-results.xml
-      - name: Upload Cobertura coverage
-        uses: actions/upload-code-coverage@v1
+      - name: Upload Test Coverage
+        uses: codecov/codecov-action@v7
         with:
-          file: verif/cocotb/coverage.xml
-          language: Verilog
-          label: code-coverage/verilator
+          files: verif/cocotb/coverage.xml
