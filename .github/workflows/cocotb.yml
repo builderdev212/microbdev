@@ -12,15 +12,18 @@ jobs:
         run: docker pull ghcr.io/builderdev212/cocotb-runner:latest
       - name: Run Tests
         run: |
-            docker run --rm \
-            -v "${{ github.workspace }}:/workspace" \
-            -w /workspace \
-            ghcr.io/builderdev212/cocotb-runner:latest \
-            pytest --junitxml=test-results.xml
+          docker run --rm \
+          -v "${{ github.workspace }}:/workspace" \
+          -w /workspace \
+          ghcr.io/builderdev212/cocotb-runner:latest \
+          cd verif/cocotb/ && pytest --junitxml=test-results.xml
       - name: Generate Coverage Report
         run: |
-          cd verif/cocotb/
-          bash scripts/coverage.sh
+          docker run --rm \
+          -v "${{ github.workspace }}:/workspace" \
+          -w /workspace \
+          ghcr.io/builderdev212/cocotb-runner:latest \
+          cd verif/cocotb/ && bash scripts/coverage.sh
       - name: Upload Test Results
         uses: actions/upload-artifact@v7
         with:
