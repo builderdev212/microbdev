@@ -37,7 +37,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: junit
+          name: test-results
           path: |
             verif/cocotb/test-results.xml
             verif/cocotb/coverage.xml
