@@ -2,8 +2,11 @@ name: cocotb
 on:
   push:
     paths:
-      - '**/cores/*'
-      - '**/verif/cocotb/tests/*'
+      - '**/*.v'
+      - '**/*.sv'
+      - '**/*.vh'
+      - '**/*.svh'
+      - '**/*.py'
   pull_request:
 jobs:
   test:
