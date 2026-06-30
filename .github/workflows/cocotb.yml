@@ -5,22 +5,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: ghcr.io/builderdev212/cocotb-runner:latest
     steps:
       - name: Pull Repository
         uses: actions/checkout@v7
-      - name: Pull Container
-        run: docker pull ghcr.io/builderdev212/cocotb-runner:latest
-      - name: Run tests and generate coverage
+      - name: Run Tests and Generate Coverage
         run: |
-          docker run --rm \
-          -v "${{ github.workspace }}:/workspace" \
-          -w /workspace \
-          ghcr.io/builderdev212/cocotb-runner:latest \
-          bash -lc '
-            cd verif/cocotb
-            pytest --junitxml=test-results.xml
-            bash scripts/coverage.sh
-          '
+          cd verif/cocotb
+          pytest --junitxml=test-results.xml
+          bash scripts/coverage.sh
       - name: Upload Test Results
         uses: actions/upload-artifact@v7
         with:
