@@ -9,7 +9,7 @@ set proj_dir [get_property directory [current_project]]
 set obj [get_filesets sources_1]
 set verilog_files [list \
                     [file normalize "../../cores/basys3/led_shift_reg.v"] \
-                    [file normalize "../../cores/basys3/fd_ss.v"] \
+                    [file normalize "../../cores/basys3/fd_ss_driver.v"] \
                   ]
 add_files -norecurse -fileset $obj $verilog_files
 set file_obj [get_files -of_objects [get_filesets sources_1] $verilog_files]
