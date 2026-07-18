@@ -21,8 +21,7 @@ jobs:
       - id: changes
         uses: tj-actions/changed-files@v47
         with:
-          json: true
-          safe_output: false
+          matrix: true
       - id: gen
         run: |
           matrix=$(
