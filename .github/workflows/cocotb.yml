@@ -27,7 +27,7 @@ jobs:
           matrix=$(
             jq -n \
               --argjson files '${{ steps.changes.outputs.all_changed_files }}' \
-              --slurpfile tests .github/cocotb-tests.json \
+              --slurpfile tests .github/tests.json \
               '{
                   include:
                     [$files[] | . as $file | $tests[0] | to_entries[] | select($file | startswith(.key)) | .value[] | {test: .}] | unique
