@@ -10,15 +10,15 @@ module fd_ss_driver #(
      * 3 - 10.49ms
      */
     parameter REFRESH_RATE = 0
-)(
-    input  wire                 clk,
-    input  wire                 rstn,
-    input  wire                 en,
-    input  wire [15:0]          digits,
-    input  wire [4:0]           decimals,
-    output wire [6:0]           digit_segment,
-    output wire                 decimal_segment,
-    output wire [3:0]           digit_en
+) (
+    input  wire        clk,
+    input  wire        rstn,
+    input  wire        en,
+    input  wire [15:0] digits,
+    input  wire [ 4:0] decimals,
+    output wire [ 6:0] digit_segment,
+    output wire        decimal_segment,
+    output wire [ 3:0] digit_en
 );
 
   // Helper functions
