@@ -9,9 +9,45 @@ on:
       - '**/*.py'
   pull_request:
 jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.gen.outputs.matrix }}
+      has-tests: ${{ steps.gen.outputs.has-tests }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: changes
+        uses: tj-actions/changed-files@v47
+        with:
+          json: true
+      - id: gen
+        run: |
+          matrix=$(
+            jq -n \
+              --argjson files '${{ steps.changes.outputs.all_changed_files }}' \
+              --slurpfile tests .github/cocotb-tests.json \
+              '{
+                  include:
+                    [$files[] | . as $file | $tests[0] | to_entries[] | select($file | startswith(.key)) | .value[] | {test: .}] | unique
+              }'
+          )
+
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          if jq -e '.include | length > 0' <<<"$matrix" >/dev/null; then
+            echo "has-tests=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-tests=false" >> "$GITHUB_OUTPUT"
+          fi
   test:
+    needs: detect
+    if: needs.detect.outputs.has-tests == 'true'
     runs-on: ubuntu-latest
     container: ghcr.io/builderdev212/cocotb-runner:latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.detect.outputs.matrix) }}
     steps:
       - name: Pull Repository
         uses: actions/checkout@v7
@@ -20,30 +56,19 @@ jobs:
       - name: Run Tests
         run: |
           cd verif/cocotb
-          pytest --junitxml=test-results.xml
-      - name: Generate Coverage
-        run: |
-          cd verif/cocotb
-          bash scripts/coverage.sh
+          bash scripts/test.sh -p ${{ matrix.test }}
       - name: Publish Test Report
         if: always()
         uses: dorny/test-reporter@v3
         with:
-          name: Cocotb Tests
-          path: verif/cocotb/test-results.xml
+          name: ${{ matrix.test }}
+          path: verif/cocotb/${{ matrix.test }}/test-results.xml
           reporter: java-junit
-      - name: Publish Coverage Report
-        if: always()
-        uses: codecov/codecov-action@v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: verif/cocotb/coverage.xml
-          disable_search: true
       - name: Upload Results
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: test-results
           path: |
-            verif/cocotb/test-results.xml
-            verif/cocotb/coverage.xml
+            verif/cocotb/${{ matrix.test }}/test-results.xml
+            verif/cocotb/${{ matrix.test }}/coverage

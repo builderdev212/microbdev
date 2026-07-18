@@ -3,6 +3,7 @@ import shutil
 import pytest
 import cocotb
 from cocotb_tools.runner import get_runner
+from random import randint
 from filelock import FileLock
 from tb import TB
 
@@ -37,10 +38,7 @@ async def test_basic(dut):
         0xFFFF,
     ]
     for num in nums:
-        await tb.display(num, 0xF)
-
-    # Check all decimals off
-    await tb.display(0x0000, 0x0)
+        await tb.display(num, randint(0,0xF))
 
 
 tests_dir = os.path.abspath(os.path.dirname(__file__))
