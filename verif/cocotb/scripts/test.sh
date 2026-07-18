@@ -40,7 +40,7 @@ fi
 
 # Run test
 cd $TEST_DIR
-pytest -n 5 --retries 2 --junitxml=${TEST_DIR}/test-results.xml
+pytest -ra -q -n 5 --retries 2 --junitxml=${TEST_DIR}/test-results.xml
 
 # Create coverage report
 cd $BASE_DIR
