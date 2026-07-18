@@ -64,6 +64,11 @@ jobs:
           name: ${{ matrix.test }}
           path: verif/cocotb/tests/${{ matrix.test }}/test-results.xml
           reporter: java-junit
+      - name: Publish Coverage Summary
+        run: |
+          python .github/scripts/cov_summary.py \
+            "verif/cocotb/tests/${{ matrix.test }}/coverage/coverage_report.yml" \
+            >> "$GITHUB_STEP_SUMMARY"
       - name: Upload Results
         if: always()
         uses: actions/upload-artifact@v7
