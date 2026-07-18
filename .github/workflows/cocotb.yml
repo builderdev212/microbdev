@@ -30,7 +30,7 @@ jobs:
               --slurpfile tests .github/tests.json \
               '{
                   include:
-                    [$files[] | . as $file | $tests[0] | to_entries[] | select($file | startswith(.key)) | .value[] | {test: .}] | unique
+                    [$files[] | . as $file | $tests[0] | to_entries[] | . as $entry | select($file | startswith($entry.key)) | $entry.value[] | {test: .}] | unique
               }'
           )
 
