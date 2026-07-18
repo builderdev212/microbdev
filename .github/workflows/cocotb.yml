@@ -62,7 +62,7 @@ jobs:
         uses: dorny/test-reporter@v3
         with:
           name: ${{ matrix.test }}
-          path: verif/cocotb/${{ matrix.test }}/test-results.xml
+          path: verif/cocotb/tests/${{ matrix.test }}/test-results.xml
           reporter: java-junit
       - name: Upload Results
         if: always()
@@ -70,5 +70,5 @@ jobs:
         with:
           name: test-results
           path: |
-            verif/cocotb/${{ matrix.test }}/test-results.xml
-            verif/cocotb/${{ matrix.test }}/coverage
+            verif/cocotb/tests/${{ matrix.test }}/test-results.xml
+            verif/cocotb/tests/${{ matrix.test }}/coverage
