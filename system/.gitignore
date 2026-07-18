@@ -3,7 +3,9 @@
 *.sim
 *.cache
 *.hw
+*.gen
 *.ip_user_files
 *.runs
 *.xpr
 *.str
+*.logfile
