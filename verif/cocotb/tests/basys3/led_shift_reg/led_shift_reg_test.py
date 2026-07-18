@@ -1,7 +1,6 @@
 import os
 import shutil
 import pytest
-
 import cocotb
 from cocotb.triggers import RisingEdge
 from cocotb_tools.runner import get_runner
