@@ -38,7 +38,7 @@ async def test_basic(dut):
         0xFFFF,
     ]
     for num in nums:
-        await tb.display(num, randint(0,0xF))
+        await tb.display(num, randint(0, 0xF))
 
 
 tests_dir = os.path.abspath(os.path.dirname(__file__))

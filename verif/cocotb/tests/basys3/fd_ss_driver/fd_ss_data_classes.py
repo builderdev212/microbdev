@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class ss_digit:
     """Class for storing digit for seven segment display."""
+
     def __init__(self, value: hex):
         self.val = value
         match value:
