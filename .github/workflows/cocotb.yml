@@ -25,7 +25,7 @@ jobs:
       - id: gen
         run: |
           matrix=$(
-            jq -n \
+            jq -nc \
               --argjson files '${{ steps.changes.outputs.all_changed_files }}' \
               --slurpfile tests .github/tests.json \
               '{
