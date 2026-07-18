@@ -30,3 +30,22 @@ set_property PACKAGE_PIN P3  [get_ports led[12]]
 set_property PACKAGE_PIN N3  [get_ports led[13]]
 set_property PACKAGE_PIN P1  [get_ports led[14]]
 set_property PACKAGE_PIN L1  [get_ports led[15]]
+
+## Four Digit Seven Segment LED Display ##
+set_property IOSTANDARD LVCMOS33 [get_ports digit_segment[*]]
+set_property PACKAGE_PIN W7 [get_ports digit_segment[0]]
+set_property PACKAGE_PIN W6 [get_ports digit_segment[1]]
+set_property PACKAGE_PIN U8 [get_ports digit_segment[2]]
+set_property PACKAGE_PIN V8 [get_ports digit_segment[3]]
+set_property PACKAGE_PIN U5 [get_ports digit_segment[4]]
+set_property PACKAGE_PIN V5 [get_ports digit_segment[5]]
+set_property PACKAGE_PIN U7 [get_ports digit_segment[6]]
+
+set_property IOSTANDARD LVCMOS33 [get_ports decimal_segment]
+set_property PACKAGE_PIN V7 [get_ports decimal_segment]
+
+set_property IOSTANDARD LVCMOS33 [get_ports digit_en[*]]
+set_property PACKAGE_PIN U2 [get_ports digit_en[0]]
+set_property PACKAGE_PIN U4 [get_ports digit_en[1]]
+set_property PACKAGE_PIN V4 [get_ports digit_en[2]]
+set_property PACKAGE_PIN W4 [get_ports digit_en[3]]

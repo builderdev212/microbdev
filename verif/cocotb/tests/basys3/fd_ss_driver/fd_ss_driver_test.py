@@ -2,39 +2,57 @@ import os
 import shutil
 import pytest
 import cocotb
-from cocotb.triggers import RisingEdge
 from cocotb_tools.runner import get_runner
+from random import randint
 from filelock import FileLock
 from tb import TB
 
 
 @cocotb.test()
-async def test_counter(dut):
+async def test_basic(dut):
     tb = TB(dut)
-    await RisingEdge(tb.clk)
+    await tb.reset()
 
-    for i in range(10000):
-        assert int(dut.counter.value) == i
-        tb.log.info(f"Count: {int(dut.counter.value)}")
-        assert tb.led.value == (
-            int(dut.counter.value) >> (tb.counter_width_param - tb.led_count_param)
-        )
-        await RisingEdge(tb.clk)
+    # Check if disabled gives proper output
+    tb.en.value = 0
+    await tb.display(0xABCD, 0xF)
+
+    # Check normal function with all possible values
+    tb.en.value = 1
+    nums = [
+        0x0000,
+        0x1111,
+        0x2222,
+        0x3333,
+        0x4444,
+        0x5555,
+        0x6666,
+        0x7777,
+        0x8888,
+        0x9999,
+        0xAAAA,
+        0xBBBB,
+        0xCCCC,
+        0xDDDD,
+        0xEEEE,
+        0xFFFF,
+    ]
+    for num in nums:
+        await tb.display(num, randint(0, 0xF))
 
 
 tests_dir = os.path.abspath(os.path.dirname(__file__))
 base_dir = os.path.abspath(os.path.join(tests_dir, "..", "..", "..", "..", ".."))
 rtl_dir = os.path.abspath(os.path.join(base_dir, "cores", "basys3"))
-dut = "led_shift_reg"
+dut = "fd_ss_driver"
 
 
 _BUILT_BUILDS = {}
-COCOTB_TESTCASES = ["test_counter"]
+COCOTB_TESTCASES = ["test_basic"]
 PARAMETER_SETS = [
     {
         "NUM": 0,
-        "LED_COUNT": 16,
-        "COUNTER_WIDTH": 32,
+        "REFRESH_RATE": 0,
     },
 ]
 
@@ -83,7 +101,7 @@ def cocotb_runner(parameters):
 
 @pytest.mark.parametrize("parameters", PARAMETER_SETS, indirect=True)
 @pytest.mark.parametrize("testcase", COCOTB_TESTCASES)
-def test_led_shift_reg(testcase, cocotb_runner):
+def test_fd_ss_driver(testcase, cocotb_runner):
     build_dir, runner, extra_env = cocotb_runner
     module = os.path.splitext(os.path.basename(__file__))[0]
     lock_file = os.path.join(build_dir, ".run.lock")
