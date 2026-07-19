@@ -6,6 +6,7 @@ clean:
 	@rm -rf $(PROJ_NAME).sim
 	@rm -rf $(PROJ_NAME).cache
 	@rm -rf $(PROJ_NAME).hw
+	@rm -rf $(PROJ_NAME).gen
 	@rm -rf $(PROJ_NAME).ip_user_files
 	@rm -rf $(PROJ_NAME).runs
 	@rm -f $(PROJ_NAME).xpr
@@ -15,6 +16,7 @@ clean:
 	@rm -f $(PROJ_NAME)*.tar.gz
 	@rm -f $(PROJ_NAME)*.prm
 	@rm -f *.jou
+	@rm -f *.logfile
 
 projgen:
 	@echo "Generating XC7A35T project..."

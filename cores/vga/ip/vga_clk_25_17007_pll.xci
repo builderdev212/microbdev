@@ -4,7 +4,7 @@
     "xci_name": "vga_clk_25_17007_pll",
     "component_reference": "xilinx.com:ip:clk_wiz:6.0",
     "ip_revision": "19",
-    "gen_directory": "../../../../fpga_xc7a35t.gen/sources_1/ip/vga_clk_25_17007_pll",
+    "gen_directory": ".gen/vga_clk_25_17007_pll",
     "parameters": {
       "component_parameters": {
         "Component_Name": [ { "value": "vga_clk_25_17007_pll", "resolve_type": "user", "usage": "all" } ],
@@ -50,7 +50,7 @@
         "SECONDARY_IN_JITTER": [ { "value": "0.010", "resolve_type": "user", "format": "float", "usage": "all" } ],
         "CLKIN1_JITTER_PS": [ { "value": "100.0", "resolve_type": "user", "format": "float", "usage": "all" } ],
         "CLKIN2_JITTER_PS": [ { "value": "100.0", "resolve_type": "user", "format": "float", "usage": "all" } ],
-        "CLKOUT1_USED": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "CLKOUT1_USED": [ { "value": "true", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "CLKOUT2_USED": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "CLKOUT3_USED": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "CLKOUT4_USED": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
@@ -234,7 +234,7 @@
         "CLKOUT6_SEQUENCE_NUMBER": [ { "value": "1", "resolve_type": "user", "format": "long", "usage": "all" } ],
         "CLKOUT7_SEQUENCE_NUMBER": [ { "value": "1", "resolve_type": "user", "format": "long", "usage": "all" } ],
         "USE_BOARD_FLOW": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "CLK_IN1_BOARD_INTERFACE": [ { "value": "Custom", "resolve_type": "user", "usage": "all" } ],
+        "CLK_IN1_BOARD_INTERFACE": [ { "value": "sys_clock", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
         "CLK_IN2_BOARD_INTERFACE": [ { "value": "Custom", "resolve_type": "user", "usage": "all" } ],
         "DIFF_CLK_IN1_BOARD_INTERFACE": [ { "value": "Custom", "resolve_type": "user", "usage": "all" } ],
         "DIFF_CLK_IN2_BOARD_INTERFACE": [ { "value": "Custom", "resolve_type": "user", "usage": "all" } ],
@@ -599,7 +599,7 @@
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
         "IPREVISION": [ { "value": "19" } ],
         "MANAGED": [ { "value": "TRUE" } ],
-        "OUTPUTDIR": [ { "value": "../../../../fpga_xc7a35t.gen/sources_1/ip/vga_clk_25_17007_pll" } ],
+        "OUTPUTDIR": [ { "value": ".gen/vga_clk_25_17007_pll" } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],
         "SHAREDDIR": [ { "value": "." } ],
         "SWVERSION": [ { "value": "2026.1" } ],
@@ -667,5 +667,5 @@
       }
     }
   },
-  "checksum": "a3bb59d6"
+  "checksum": "fa4bc2c7"
 }

@@ -20,10 +20,11 @@ clean_all: clean clean_xc7a35t
 
 .PHONY: clean
 clean:
+	@find . -type d -name '.gen' -print0 | xargs -0 rm -rf
 	@rm -rf *.Xil
 	@rm -f *.log
 	@rm -f *.jou
 
 .PHONY: clean_xc7a35t
 clean_xc7a35t:
-	@cd src/system/XC7A35T/build && make clean
+	@cd system/XC7A35T/build && make clean
