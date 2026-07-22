@@ -9,20 +9,20 @@ module fd_ss_driver #(
      * 2 - 5.24ms
      * 3 - 10.49ms
      */
-    parameter REFRESH_RATE = 0
+    parameter integer REFRESH_RATE = 0
 ) (
     input  wire        clk,
     input  wire        rstn,
     input  wire        en,
     input  wire [15:0] digits,
-    input  wire [ 4:0] decimals,
+    input  wire [ 3:0] decimals,
     output wire [ 6:0] digit_segment,
     output wire        decimal_segment,
     output wire [ 3:0] digit_en
 );
 
   // Helper functions
-  function [6:0] ss_hex_digit;
+  function automatic [6:0] ss_hex_digit;
     input [3:0] a;
     begin
       case (a)
@@ -42,12 +42,13 @@ module fd_ss_driver #(
         4'hD: ss_hex_digit = 7'b0100001;
         4'hE: ss_hex_digit = 7'b0000110;
         4'hF: ss_hex_digit = 7'b0001110;
+        default: ss_hex_digit = 7'b0000000;
       endcase
     end
   endfunction
 
   // Counter to handle timing for digit enables.
-  localparam COUNTER_WIDTH = 17 + REFRESH_RATE;
+  localparam integer COUNTER_WIDTH = 17 + REFRESH_RATE;
 
   reg [COUNTER_WIDTH-1:0] counter = 0;
   wire [1:0] digit_en_packed;
@@ -61,7 +62,7 @@ module fd_ss_driver #(
   end
 
   assign digit_en_packed = counter[COUNTER_WIDTH-1:COUNTER_WIDTH-2];
-  assign digit_en = en ? ~(1 << digit_en_packed) : 4'hF;
+  assign digit_en = (en && rstn) ? ~(1 << digit_en_packed) : 4'hF;
 
   // Output assignment
   assign digit_segment = ss_hex_digit(digits[4*digit_en_packed+:4]);
