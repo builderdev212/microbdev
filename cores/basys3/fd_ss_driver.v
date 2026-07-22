@@ -15,7 +15,7 @@ module fd_ss_driver #(
     input  wire        rstn,
     input  wire        en,
     input  wire [15:0] digits,
-    input  wire [ 4:0] decimals,
+    input  wire [ 3:0] decimals,
     output wire [ 6:0] digit_segment,
     output wire        decimal_segment,
     output wire [ 3:0] digit_en
@@ -62,7 +62,7 @@ module fd_ss_driver #(
   end
 
   assign digit_en_packed = counter[COUNTER_WIDTH-1:COUNTER_WIDTH-2];
-  assign digit_en = (en && !rstn) ? ~(1 << digit_en_packed) : 4'hF;
+  assign digit_en = (en && rstn) ? ~(1 << digit_en_packed) : 4'hF;
 
   // Output assignment
   assign digit_segment = ss_hex_digit(digits[4*digit_en_packed+:4]);

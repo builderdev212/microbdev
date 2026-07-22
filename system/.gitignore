@@ -9,3 +9,5 @@
 *.xpr
 *.str
 *.logfile
+*.pb
+*.wcfg

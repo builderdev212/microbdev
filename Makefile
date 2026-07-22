@@ -16,7 +16,7 @@ open_xc7a35t:
 
 ## CLEAN UP ##
 .PHONY: clean_all
-clean_all: clean clean_xc7a35t
+clean_all: clean clean_xc7a35t clean_cocotb
 
 .PHONY: clean
 clean:
@@ -28,3 +28,7 @@ clean:
 .PHONY: clean_xc7a35t
 clean_xc7a35t:
 	@cd system/XC7A35T/build && make clean
+
+.PHONY: clean_cocotb
+clean_cocotb:
+	@cd verif/cocotb && make clean

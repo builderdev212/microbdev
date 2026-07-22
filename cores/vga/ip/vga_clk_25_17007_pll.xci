@@ -28,7 +28,7 @@
         "USE_FREQ_SYNTH": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "USE_SPREAD_SPECTRUM": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "USE_PHASE_ALIGNMENT": [ { "value": "true", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "USE_MIN_POWER": [ { "value": "true", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "USE_MIN_POWER": [ { "value": "false", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "USE_DYN_PHASE_SHIFT": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "USE_DYN_RECONFIG": [ { "value": "false", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "JITTER_SEL": [ { "value": "No_Jitter", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
@@ -168,7 +168,7 @@
         "MMCM_REF_JITTER2": [ { "value": "0.010", "resolve_type": "user", "format": "float", "usage": "all" } ],
         "MMCM_STARTUP_WAIT": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "MMCM_CLKOUT0_DIVIDE_F": [ { "value": "49", "value_src": "user", "resolve_type": "user", "format": "float", "usage": "all" } ],
-        "MMCM_CLKOUT0_DUTY_CYCLE": [ { "value": "0.5", "value_src": "user", "resolve_type": "user", "format": "float", "usage": "all" } ],
+        "MMCM_CLKOUT0_DUTY_CYCLE": [ { "value": "0.500", "value_src": "user", "resolve_type": "user", "format": "float", "usage": "all" } ],
         "MMCM_CLKOUT0_PHASE": [ { "value": "0.000", "resolve_type": "user", "format": "float", "usage": "all" } ],
         "MMCM_CLKOUT0_USE_FINE_PS": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "MMCM_CLKOUT1_DIVIDE": [ { "value": "1", "resolve_type": "user", "format": "long", "usage": "all" } ],
@@ -296,7 +296,7 @@
         "C_PRIM_IN_JITTER": [ { "value": "0.010", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_SECONDARY_IN_JITTER": [ { "value": "0.010", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_JITTER_SEL": [ { "value": "No_Jitter", "resolve_type": "generated", "usage": "all" } ],
-        "C_USE_MIN_POWER": [ { "value": "1", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "C_USE_MIN_POWER": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_USE_MIN_O_JITTER": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_USE_MAX_I_JITTER": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_USE_DYN_PHASE_SHIFT": [ { "value": "0", "resolve_type": "generated", "format": "long", "usage": "all" } ],
@@ -415,7 +415,7 @@
         "C_MMCM_CLKOUT4_DIVIDE": [ { "value": "1", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_MMCM_CLKOUT5_DIVIDE": [ { "value": "1", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "C_MMCM_CLKOUT6_DIVIDE": [ { "value": "1", "resolve_type": "generated", "format": "long", "usage": "all" } ],
-        "C_MMCM_CLKOUT0_DUTY_CYCLE": [ { "value": "0.5", "resolve_type": "generated", "format": "float", "usage": "all" } ],
+        "C_MMCM_CLKOUT0_DUTY_CYCLE": [ { "value": "0.500", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_MMCM_CLKOUT1_DUTY_CYCLE": [ { "value": "0.500", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_MMCM_CLKOUT2_DUTY_CYCLE": [ { "value": "0.500", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_MMCM_CLKOUT3_DUTY_CYCLE": [ { "value": "0.500", "resolve_type": "generated", "format": "float", "usage": "all" } ],
@@ -667,5 +667,5 @@
       }
     }
   },
-  "checksum": "fa4bc2c7"
+  "checksum": "f4e832a5"
 }

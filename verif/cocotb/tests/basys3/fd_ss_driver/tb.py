@@ -62,7 +62,7 @@ class TB:
             en = (0x1 << i) ^ 0xF
             for _ in range(2 ** (17 + self.refresh_rate_param - 2)):
                 await RisingEdge(self.clk)
-                if self.en.value == 1 and self.rstn == 1:
+                if self.en.value == 1:
                     assert int(self.digit_en.value) == en
                     assert int(self.decimal_segment.value) == decimal
                     assert int(self.digit_segment.value) == digit.raw

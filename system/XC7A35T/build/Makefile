@@ -17,6 +17,9 @@ clean:
 	@rm -f $(PROJ_NAME)*.prm
 	@rm -f *.jou
 	@rm -f *.logfile
+	@rm -f *.str
+	@rm -f *.wcfg
+	@rm -f *.pb
 
 projgen:
 	@echo "Generating XC7A35T project..."
