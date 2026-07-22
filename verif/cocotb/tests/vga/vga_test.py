@@ -33,6 +33,7 @@ async def test_buff_swap(dut):
     await tb.write_frame(frame1)
     await tb.verify_frame(frame1)
 
+
 @cocotb.test()
 async def test_send_fram_with_gaps(dut):
     tb = TB(dut)
@@ -42,6 +43,7 @@ async def test_send_fram_with_gaps(dut):
 
     await tb.write_frame(frame0, True)
     await tb.verify_frame(frame0)
+
 
 tests_dir = os.path.abspath(os.path.dirname(__file__))
 base_dir = os.path.abspath(os.path.join(tests_dir, "..", "..", "..", ".."))

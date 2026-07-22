@@ -5,6 +5,7 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge
 from random import randint
 
+
 class TB:
     def __init__(self, dut):
         self.dut = dut
@@ -52,7 +53,7 @@ class TB:
         self.wstart.value = 0
 
         # Send Frame
-        count = 0 if self.dut.framebuffer_inst.curr_buff.value == 1 else 320*240
+        count = 0 if self.dut.framebuffer_inst.curr_buff.value == 1 else 320 * 240
         for row in frame:
             for pixel in row:
                 self.din.value = pixel
@@ -74,7 +75,6 @@ class TB:
             for pixel in row:
                 assert int(self.dut.framebuffer_inst.buff_ram[count].value) == pixel
                 count += 1
-
 
     def rgb332_to_rgb_444(self, color):
         red = (color >> 5) & 0x7
@@ -100,7 +100,7 @@ class TB:
             await RisingEdge(self.dut.clk)
 
             for _ in range(320):
-                x = int(self.dut.fb_h_pos.value)-1
+                x = int(self.dut.fb_h_pos.value) - 1
                 y = int(self.dut.fb_v_pos.value)
                 self.log.info(f"x: {x}, y: {y}")
 
