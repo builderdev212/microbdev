@@ -25,6 +25,3 @@ projgen:
 	@echo "Generating XC7A35T project..."
 	@vivado -mode batch -source projgen_xc7a35t.tcl -notrace -nojournal -log vivado_projgen.log
 
-add_led:
-	@echo "Adding led files..."
-	@vivado -mode batch -source add_led.tcl -notrace -log vivado_add_led.log ${PROJ_NAME}.xpr

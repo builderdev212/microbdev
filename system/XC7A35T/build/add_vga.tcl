@@ -9,9 +9,9 @@ set proj_dir [get_property directory [current_project]]
 set obj [get_filesets sources_1]
 set verilog_files [list \
                     [file normalize "../../../cores/vga/vga_core.v"] \
-                    [file normalize "../../../cores/vga/vga_demo.v"] \
                     [file normalize "../../../cores/vga/vga_double_framebuffer.v"] \
                     [file normalize "../../../cores/vga/vga_pos_sync.v"] \
+                    [file normalize "../../../cores/vga/demo/vga_demo.v"] \
                   ]
 add_files -norecurse -fileset $obj $verilog_files
 set file_obj [get_files -of_objects [get_filesets sources_1] $verilog_files]
@@ -23,11 +23,11 @@ set_property -name "used_in_simulation" -value "1" -objects $file_obj
 if {[string equal [get_filesets -quiet vga_sim] ""]} {
   create_fileset -simset vga_sim
 }
+set obj [get_filesets vga_sim]
 set verilog_sim_files [list \
                     [file normalize "../../../cores/vga/tb/tb_vga_core.v"] \
                   ]
 add_files -norecurse -fileset $obj $verilog_sim_files
-set obj [get_filesets vga_sim]
 set_property -name "sim_wrapper_top" -value "1" -objects $obj
 set_property -name "top" -value "tb_vga_core" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj

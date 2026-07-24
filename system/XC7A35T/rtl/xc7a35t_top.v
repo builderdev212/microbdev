@@ -22,7 +22,10 @@ module xc7a35t_top #(
     output wire [             3:0] vga_green,
     output wire [             3:0] vga_blue,
     output wire                    vga_hsync,
-    output wire                    vga_vsync
+    output wire                    vga_vsync,
+    // UART //
+    input  wire                    uart_rx,
+    output wire                    uart_tx
 );
 
   // Global Reset Signals //
@@ -116,5 +119,49 @@ module xc7a35t_top #(
       end
     end
   endgenerate
+
+  // UART //
+  wire [7:0] din;
+  wire       start;
+  wire       busy;
+  wire uart_clk_locked;
+  wire uart_clk;
+  wire uart_rstn;
+
+  uart_clk_96_pll uart_clk_inst (
+      .clk_in1 (clk),
+      .resetn  (global_rstn),
+      .locked  (uart_clk_locked),
+      .clk_out1(uart_clk)
+  );
+  assign uart_rstn = uart_clk_locked && global_rstn;
+
+  uart_transmitter_demo demo (
+      .clk  (uart_clk),
+      .rstn (uart_rstn),
+      .din  (din),
+      .start(start),
+      .busy (busy)
+  );
+
+  uart_transmitter #(
+      .CLK_RATE (96_000_000),
+      .BAUD_RATE(12_000_000)
+  ) tx (
+      .clk(uart_clk),
+      .rstn(uart_rstn),
+      .start(start),
+      .din(din),
+      .busy(busy),
+      .tx(uart_tx)
+  );
+
+  uart_ila test_uart (
+    .clk(uart_clk),
+    .probe0(start),
+    .probe1(din),
+    .probe2(busy),
+    .probe3(uart_tx)
+  );
 
 endmodule

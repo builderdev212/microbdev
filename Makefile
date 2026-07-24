@@ -6,15 +6,11 @@
 projgen_xc7a35t:
 	@cd system/XC7A35T/build && make projgen
 
-.PHONY: add_led_xc7a35t
-add_led_xc7a35t:
-	@cd system/XC7A35T/build && make add_led
-
 .PHONY: open_xc7a35t
 open_xc7a35t:
 	@cd system/XC7A35T/build && vivado fpga_xc7a35t.xpr &
 
-## CLEAN UP ##
+## CLEAN ##
 .PHONY: clean_all
 clean_all: clean clean_xc7a35t clean_cocotb
 

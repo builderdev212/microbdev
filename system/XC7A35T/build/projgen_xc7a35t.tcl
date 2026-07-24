@@ -166,6 +166,8 @@ source [file join $origin_dir add_basys3.tcl]
 puts "INFO: basys3 added."
 source [file join $origin_dir add_vga.tcl]
 puts "INFO: vga added."
+source [file join $origin_dir add_uart.tcl]
+puts "INFO: uart added."
 
 current_run -synthesis vga_synth
 current_run -implementation vga_impl

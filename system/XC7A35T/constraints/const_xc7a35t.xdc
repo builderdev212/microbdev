@@ -93,3 +93,10 @@ set_property PACKAGE_PIN P19 [get_ports vga_hsync]
 
 set_property IOSTANDARD LVCMOS33 [get_ports vga_vsync]
 set_property PACKAGE_PIN R19 [get_ports vga_vsync]
+
+## UART ##
+set_property IOSTANDARD LVCMOS33 [get_ports uart_rx]
+set_property PACKAGE_PIN B18 [get_ports uart_rx]
+
+set_property IOSTANDARD LVCMOS33 [get_ports uart_tx]
+set_property PACKAGE_PIN A18 [get_ports uart_tx]

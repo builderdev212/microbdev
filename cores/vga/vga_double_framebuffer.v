@@ -135,8 +135,8 @@ module vga_double_framebuffer #(
     end
   end
 
-  assign wready = (state_reg == BUFF_READY) ? 1 : 0;
-  assign wfinish = (buff_wraddr == buff_ending_addr(curr_buff)) ? 1 : 0;
+  assign wready = state_reg == BUFF_READY;
+  assign wfinish = buff_wraddr == buff_ending_addr(curr_buff);
 
   // Swap Frame Control //
   reg prev_buff = 0;
