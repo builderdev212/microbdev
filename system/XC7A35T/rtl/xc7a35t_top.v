@@ -6,7 +6,8 @@ module xc7a35t_top #(
     parameter integer LED_COUNT = 16,
     parameter integer SWITCH_COUNT = 16,
     parameter integer INCLUDE_VGA = 1,
-    parameter integer INCLUDE_VGA_DEMO = 1
+    parameter integer INCLUDE_VGA_DEMO = 1,
+    parameter integer INCLUDE_UART = 1
 ) (
     input  wire                    clk,
     // Four Digit Seven Segment LED Display //
@@ -40,14 +41,22 @@ module xc7a35t_top #(
   assign fd_ss_decimal = 4'h0;
 
   // VGA Signals //
-  wire vga_clk;
-  wire vga_clk_locked;
-  wire vga_rstn;
+  wire       vga_clk;
+  wire       vga_clk_locked;
+  wire       vga_rstn;
   wire [7:0] vga_din;
-  wire vga_din_v;
-  wire vga_wstart;
-  wire vga_wready;
-  wire vga_wfinish;
+  wire       vga_din_v;
+  wire       vga_wstart;
+  wire       vga_wready;
+  wire       vga_wfinish;
+
+  // UART Signals //
+  wire       uart_clk;
+  wire       uart_clk_locked;
+  wire       uart_rstn;
+  wire       start;
+  wire [7:0] din;
+  wire       busy;
 
   // LEDs //
   fd_ss_driver #(
@@ -121,47 +130,38 @@ module xc7a35t_top #(
   endgenerate
 
   // UART //
-  wire [7:0] din;
-  wire       start;
-  wire       busy;
-  wire uart_clk_locked;
-  wire uart_clk;
-  wire uart_rstn;
+  generate
+    if (INCLUDE_UART == 1) begin : gen_uart_core
+      uart_clk_96_pll uart_clk_inst (
+          .clk_in1 (clk),
+          .resetn  (global_rstn),
+          .locked  (uart_clk_locked),
+          .clk_out1(uart_clk)
+      );
 
-  uart_clk_96_pll uart_clk_inst (
-      .clk_in1 (clk),
-      .resetn  (global_rstn),
-      .locked  (uart_clk_locked),
-      .clk_out1(uart_clk)
-  );
-  assign uart_rstn = uart_clk_locked && global_rstn;
+      assign uart_rstn = uart_clk_locked && global_rstn;
 
-  uart_transmitter_demo demo (
-      .clk  (uart_clk),
-      .rstn (uart_rstn),
-      .din  (din),
-      .start(start),
-      .busy (busy)
-  );
+      uart_transmitter_demo demo (
+          .clk  (uart_clk),
+          .rstn (uart_rstn),
+          .din  (din),
+          .start(start),
+          .busy (busy)
+      );
 
-  uart_transmitter #(
-      .CLK_RATE (96_000_000),
-      .BAUD_RATE(12_000_000)
-  ) tx (
-      .clk(uart_clk),
-      .rstn(uart_rstn),
-      .start(start),
-      .din(din),
-      .busy(busy),
-      .tx(uart_tx)
-  );
-
-  uart_ila test_uart (
-    .clk(uart_clk),
-    .probe0(start),
-    .probe1(din),
-    .probe2(busy),
-    .probe3(uart_tx)
-  );
+      uart_transmitter #(
+          .CLK_RATE(96_000_000),
+          .BAUD_RATE(12_000_000),
+          .ILA_EN(0)
+      ) tx (
+          .clk(uart_clk),
+          .rstn(uart_rstn),
+          .start(start),
+          .din(din),
+          .busy(busy),
+          .tx(uart_tx)
+      );
+    end
+  endgenerate
 
 endmodule

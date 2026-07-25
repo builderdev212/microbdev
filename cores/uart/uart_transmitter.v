@@ -3,7 +3,8 @@
 
 module uart_transmitter #(
     parameter integer CLK_RATE  = 96_000_000,
-    parameter integer BAUD_RATE = 12_000_000
+    parameter integer BAUD_RATE = 12_000_000,
+    parameter integer ILA_EN = 0
 ) (
     input  wire       clk,
     input  wire       rstn,
@@ -33,6 +34,19 @@ module uart_transmitter #(
   localparam [1:0] READY = 0, START = 1, DATA = 2, STOP = 3;
 
   reg [1:0] state_reg = READY;
+
+  // ILA //
+  generate
+    if (ILA_EN == 1) begin : gen_uart_transmitter_ila
+      uart_ila uart_transmitter_ila (
+          .clk(clk),
+          .probe0(start),
+          .probe1(din),
+          .probe2(busy),
+          .probe3(tx)
+      );
+    end
+  endgenerate
 
   // Clock Enable Generator //
   always @(posedge clk) begin

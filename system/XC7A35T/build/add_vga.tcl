@@ -34,7 +34,7 @@ set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
 
 set obj [get_filesets sources_1]
 set xci_files [list \
-                [file normalize "../../../cores/vga/ip/vga_clk_25_17007_pll.xci"] \
+                [file normalize "../../../cores/vga/ip/vga_clk_25_17007_pll/vga_clk_25_17007_pll.xci"] \
               ]
 add_files -norecurse -fileset $obj $xci_files
 set xci_obj [get_files -of_objects $obj $xci_files]

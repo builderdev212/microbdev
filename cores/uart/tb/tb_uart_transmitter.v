@@ -4,60 +4,58 @@
 
 module tb_uart_transmitter;
 
-    localparam integer CLK_RATE  = 96_000_000;
-    localparam integer BAUD_RATE = 12_000_000;
+  localparam integer CLK_RATE = 96_000_000;
+  localparam integer BAUD_RATE = 12_000_000;
 
-    reg clk;
-    reg rstn;
+  reg clk;
+  reg rstn;
 
-    reg start;
-    reg [7:0] din;
+  reg start;
+  reg [7:0] din;
 
-    wire busy;
-    wire tx;
+  wire busy;
+  wire tx;
 
-    uart_transmitter #(
-        .CLK_RATE(CLK_RATE),
-        .BAUD_RATE(BAUD_RATE)
-    ) dut (
-        .clk(clk),
-        .rstn(rstn),
-        .start(start),
-        .din(din),
-        .busy(busy),
-        .tx(tx)
-    );
+  uart_transmitter #(
+      .CLK_RATE (CLK_RATE),
+      .BAUD_RATE(BAUD_RATE),
+      .ILA_EN(0)
+  ) dut (
+      .clk(clk),
+      .rstn(rstn),
+      .start(start),
+      .din(din),
+      .busy(busy),
+      .tx(tx)
+  );
 
-    // 96 MHz clock
-    initial begin
-        clk = 0;
-        forever #5.208 clk = ~clk;
-    end
+  // 96 MHz clock
+  initial begin
+    clk = 0;
+    forever #5.208 clk = ~clk;
+  end
 
-    initial begin
-        rstn  = 0;
-        start = 0;
-        din   = 8'h00;
+  initial begin
+    rstn  = 0;
+    start = 0;
+    din   = 8'h00;
 
-        repeat (10) @(posedge clk);
+    repeat (10) @(posedge clk);
 
-        rstn = 1;
+    rstn = 1;
 
-        repeat (10) @(posedge clk);
+    repeat (10) @(posedge clk);
 
-        // Send 0xA5
-        din = 8'hA5;
-        start = 1;
+    din   = 8'hA5;
+    start = 1;
+    @(posedge clk);
+    start = 0;
 
-        @(posedge clk);
-        start = 0;
+    wait (!busy);
 
-        // Wait until transmission completes
-        wait (!busy);
+    repeat (100) @(posedge clk);
 
-        #500;
-
-        $finish;
-    end
+    $finish;
+  end
 
 endmodule
