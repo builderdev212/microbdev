@@ -7,7 +7,9 @@ module xc7a35t_top #(
     parameter integer SWITCH_COUNT = 16,
     parameter integer INCLUDE_VGA = 1,
     parameter integer INCLUDE_VGA_DEMO = 1,
-    parameter integer INCLUDE_UART = 1
+    parameter integer INCLUDE_UART = 1,
+    parameter integer UART_TRANSMITTER_DEMO = 0,
+    parameter integer UART_LOOPBACK = 1
 ) (
     input  wire                    clk,
     // Four Digit Seven Segment LED Display //
@@ -54,9 +56,6 @@ module xc7a35t_top #(
   wire       uart_clk;
   wire       uart_clk_locked;
   wire       uart_rstn;
-  wire       start;
-  wire [7:0] din;
-  wire       busy;
 
   // LEDs //
   fd_ss_driver #(
@@ -141,24 +140,23 @@ module xc7a35t_top #(
 
       assign uart_rstn = uart_clk_locked && global_rstn;
 
-      uart_transmitter_demo demo (
-          .clk  (uart_clk),
-          .rstn (uart_rstn),
-          .din  (din),
-          .start(start),
-          .busy (busy)
-      );
-
-      uart_transmitter #(
+      uart_core #(
+          .RX_SYNC_STAGES(2),
           .CLK_RATE(96_000_000),
           .BAUD_RATE(12_000_000),
-          .ILA_EN(0)
-      ) tx (
+          .RX_ILA_EN(0),
+          .TX_ILA_EN(0),
+          .LOOPBACK_EN(UART_LOOPBACK),
+          .TRANSMITTER_DEMO_EN(UART_TRANSMITTER_DEMO)
+      ) uart_core_inst (
           .clk(uart_clk),
           .rstn(uart_rstn),
-          .start(start),
-          .din(din),
-          .busy(busy),
+          .din_start(),
+          .din(),
+          .din_busy(),
+          .dout(),
+          .dout_v(),
+          .rx(uart_rx),
           .tx(uart_tx)
       );
     end
