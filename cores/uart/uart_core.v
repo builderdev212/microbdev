@@ -74,9 +74,28 @@ module uart_core #(
           .busy (tx_busy)
       );
     end else if (LOOPBACK_EN == 1) begin : gen_loopback
+      wire loopback_fifo_empty;
+
+      sync_fifo #(
+        .DATA_WIDTH(8),
+        .FIFO_DEPTH(32),
+        .CNT_WIDTH(5),
+        .DROP_CNT_WIDTH(8)
+      ) loopback_fifo_inst (
+        .clk(clk),
+        .rstn(rstn),
+        .wr_en(rx_dout_v),
+        .din(rx_dout),
+        .rd_en(!loopback_fifo_empty && !tx_busy),
+        .dout(tx_din),
+        .dout_v(tx_start),
+        .empty(loopback_fifo_empty),
+        .full(),
+        .cnt(),
+        .drop_cnt()
+      );
+
       assign din_busy = 0;
-      assign tx_start = rx_dout_v;
-      assign tx_din   = rx_dout;
     end else begin : gen_custom_hookup
       assign tx_start = din_start;
       assign tx_din = din;
