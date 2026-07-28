@@ -5,11 +5,7 @@ import sys
 PORT = "/dev/ttyUSB1"
 BAUD = 12_000_000
 
-ser = serial.Serial(
-    PORT,
-    BAUD,
-    timeout=0.25
-)
+ser = serial.Serial(PORT, BAUD, timeout=0.25)
 
 test_data = bytes(range(256))
 
@@ -17,7 +13,7 @@ print(f"Sending {len(test_data)} bytes...")
 
 print("TX:")
 for i in range(0, len(test_data), 16):
-    print(f"{i:03X}: " + " ".join(f"{b:02X}" for b in test_data[i:i+16]))
+    print(f"{i:03X}: " + " ".join(f"{b:02X}" for b in test_data[i : i + 16]))
 
 ser.reset_input_buffer()
 ser.write(test_data)
@@ -34,7 +30,7 @@ print(f"\nReceived {len(received)} bytes")
 
 print("RX:")
 for i in range(0, len(received), 16):
-    print(f"{i:03X}: " + " ".join(f"{b:02X}" for b in received[i:i+16]))
+    print(f"{i:03X}: " + " ".join(f"{b:02X}" for b in received[i : i + 16]))
 
 if len(received) != len(test_data):
     print(f"\nERROR: Timeout. Received {len(received)}/{len(test_data)} bytes.")
