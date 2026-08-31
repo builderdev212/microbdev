@@ -12,7 +12,17 @@ module tb_uart_receiver;
   wire [7:0] dout;
   wire       dout_v;
 
-  uart_reciever dut (
+  // Waveform Output
+  initial begin
+    $dumpfile("wave.vcd");
+    $dumpvars(0, tb_uart_receiver);
+  end
+
+  // DUT
+  uart_receiver #(
+      .SYNC_STAGES(2),
+      .ILA_EN(0)
+  ) dut (
       .clk(clk),
       .rstn(rstn),
       .rx(rx),
@@ -20,18 +30,19 @@ module tb_uart_receiver;
       .dout_v(dout_v)
   );
 
-  // 96 MHz clock
+  // 96 MHz Clock
   initial begin
     clk = 0;
     forever #5.208 clk = ~clk;
   end
 
+  // Tasks
   task uart_bit;
     input value;
     integer j;
     begin
       rx = value;
-      for (j = 0; j < BIT_CLKS; j = j + 1) @(posedge clk);
+      for (j = 0; j < 8; j = j + 1) @(posedge clk); // 12_000_000 Baud
     end
   endtask
 
@@ -39,21 +50,14 @@ module tb_uart_receiver;
     input [7:0] data;
     integer k;
     begin
-      // Start bit
       uart_bit(1'b0);
-
-      // Data bits (LSB first)
       for (k = 0; k < 8; k = k + 1) uart_bit(data[k]);
-
-      // Stop bit
       uart_bit(1'b1);
-
-      // Idle for one bit
       uart_bit(1'b1);
     end
   endtask
 
-  integer i;
+  // Simulation
   initial begin
     rstn = 0;
     rx   = 1'b1;

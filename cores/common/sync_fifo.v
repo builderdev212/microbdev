@@ -26,24 +26,24 @@ module sync_fifo #(
   // FIFO Pointer Signals //
   localparam integer PTR_WIDTH = $clog2(FIFO_DEPTH);
 
-  reg [     PTR_WIDTH-1:0] wr_ptr = 0;
-  reg [     PTR_WIDTH-1:0] rd_ptr = 0;
+  reg [     PTR_WIDTH:0] wr_ptr;
+  reg [     PTR_WIDTH:0] rd_ptr;
 
   // RAM Signals //
   reg [    DATA_WIDTH-1:0] ram              [0:FIFO_DEPTH-1];
 
   // Output Data Signals //
-  reg [    DATA_WIDTH-1:0] dout_reg = 0;
-  reg                      dout_v_reg = 0;
+  reg [    DATA_WIDTH-1:0] dout_reg;
+  reg                      dout_v_reg;
 
   // Flag Signals //
-  reg [     CNT_WIDTH-1:0] cnt_reg = 0;
-  reg [DROP_CNT_WIDTH-1:0] drop_cnt_reg = 0;
+  reg [     CNT_WIDTH-1:0] cnt_reg;
+  reg [DROP_CNT_WIDTH-1:0] drop_cnt_reg;
 
   // Write Logic //
   always @(posedge clk) begin
     if (wr_en && !full) begin
-      ram[wr_ptr] <= din;
+      ram[wr_ptr[PTR_WIDTH-1:0]] <= din;
       wr_ptr <= wr_ptr + 1;
     end
 
@@ -55,7 +55,7 @@ module sync_fifo #(
   // Read Logic //
   always @(posedge clk) begin
     if (rd_en && !empty) begin
-      dout_reg <= ram[rd_ptr];
+      dout_reg <= ram[rd_ptr[PTR_WIDTH-1:0]];
       dout_v_reg <= 1;
       rd_ptr <= rd_ptr + 1;
     end else begin
@@ -75,7 +75,7 @@ module sync_fifo #(
   // Flag Logic //
   always @(posedge clk) begin
     if (wr_en && !rd_en) begin
-      if (cnt_reg != FIFO_DEPTH) begin
+      if (cnt_reg != FIFO_DEPTH[CNT_WIDTH-1:0]) begin
         cnt_reg <= cnt_reg + 1;
       end else begin
         drop_cnt_reg <= drop_cnt_reg + 1;
@@ -92,8 +92,9 @@ module sync_fifo #(
     end
   end
 
-  assign full = cnt_reg == FIFO_DEPTH;
-  assign empty = cnt_reg == 0;
+  assign empty = (wr_ptr == rd_ptr);
+  assign full = ((wr_ptr[PTR_WIDTH] ^ rd_ptr[PTR_WIDTH]) && (wr_ptr[PTR_WIDTH-1:0] == rd_ptr[PTR_WIDTH-1:0]));
+
   assign cnt = cnt_reg;
   assign drop_cnt = drop_cnt_reg;
 

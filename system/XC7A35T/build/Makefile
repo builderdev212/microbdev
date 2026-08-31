@@ -1,5 +1,13 @@
 PROJ_NAME:=fpga_xc7a35t
 
+.PHONY: projgen
+projgen:
+	@vivado -mode batch -source projgen_xc7a35t.tcl -notrace -nojournal -log vivado_projgen.log
+
+.PHONY: open
+open:
+	@vivado fpga_xc7a35t.xpr &
+
 clean:
 	@rm -rf $(PROJ_NAME).runs
 	@rm -rf $(PROJ_NAME).srcs
@@ -20,8 +28,4 @@ clean:
 	@rm -f *.str
 	@rm -f *.wcfg
 	@rm -f *.pb
-
-projgen:
-	@echo "Generating XC7A35T project..."
-	@vivado -mode batch -source projgen_xc7a35t.tcl -notrace -nojournal -log vivado_projgen.log
 

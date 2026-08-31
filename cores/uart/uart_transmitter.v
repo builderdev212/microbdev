@@ -20,20 +20,20 @@ module uart_transmitter #(
   localparam integer DIV_CNT = CLK_RATE / BAUD_RATE;
   localparam integer DIV_WIDTH = $clog2(DIV_CNT);
 
-  reg [DIV_WIDTH-1:0] tick_cnt = 0;
-  reg                 tick = 0;
+  reg [DIV_WIDTH-1:0] tick_cnt;
+  reg                 tick;
 
   // Input Handling Signals //
-  reg [          7:0] latched_din = 0;
-  reg [          2:0] curr_bit = 0;
+  reg [          7:0] latched_din;
+  reg [          2:0] curr_bit;
 
   // Output Signals //
-  reg                 tx_reg = 1;
+  reg                 tx_reg;
 
   // FSM Signals //
   localparam [1:0] READY = 0, START = 1, DATA = 2, STOP = 3;
 
-  reg [1:0] state_reg = READY;
+  reg [1:0] state_reg;
 
   // ILA //
   generate
@@ -54,7 +54,7 @@ module uart_transmitter #(
       tick_cnt <= 0;
       tick <= 0;
     end else begin
-      if (tick_cnt == DIV_CNT - 1) begin
+      if (tick_cnt == DIV_WIDTH'(DIV_CNT - 1)) begin
         tick_cnt <= 0;
         tick <= 1;
       end else begin

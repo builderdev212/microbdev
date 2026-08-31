@@ -7,6 +7,12 @@ module tb_vga_core;
   reg clk;
   reg rstn;
 
+  // Waveform Output
+  initial begin
+    $dumpfile("wave.vcd");
+    $dumpvars(0, tb_uart_receiver);
+  end
+
   initial begin
     clk = 0;
     // 25 MHz

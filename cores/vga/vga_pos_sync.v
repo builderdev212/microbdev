@@ -34,7 +34,7 @@ module vga_pos_sync #(
 );
 
   // Horizontal Position
-  reg [H_POS_WIDTH-1:0] h_pos_reg = 0;  // X position
+  reg [H_POS_WIDTH-1:0] h_pos_reg;  // X position
 
   always @(posedge clk) begin
     if (h_pos_reg == H_TOTAL - 1) begin
@@ -52,7 +52,7 @@ module vga_pos_sync #(
   assign hsync = ~((h_pos_reg >= H_ACTIVE + H_FRONT_PORCH) && (h_pos_reg < H_ACTIVE + H_FRONT_PORCH + H_SYNC));
 
   // Vertical Position
-  reg [V_POS_WIDTH-1:0] v_pos_reg = 0;  // Y position
+  reg [V_POS_WIDTH-1:0] v_pos_reg;  // Y position
 
   always @(posedge clk) begin
     if (h_pos_reg == H_TOTAL - 1) begin

@@ -11,26 +11,27 @@ module uart_receiver #(
     output wire [7:0] dout,
     output wire       dout_v,
     // UART Interface //
-    input wire       rx
+    input  wire       rx
 );
 
   // Input Synchronizer Signals //
-  (* ASYNC_REG = "TRUE" *) reg [SYNC_STAGES-1:0] rx_ff = {SYNC_STAGES{1'b1}};
+  (* ASYNC_REG = "TRUE" *) reg [SYNC_STAGES-1:0] rx_ff;
   wire rx_sync;
 
   // Start Detection Signals //
   wire uart_transaction_start;
-  reg  rx_prev = 1;
+  reg rx_prev;
 
   // FSM Signals //
   localparam [1:0] READY = 0, START = 1, DATA = 2, STOP = 3;
 
-  reg [1:0] state_reg = READY;
+  reg [1:0] state_reg;
 
   // Bit Sample Signals //
-  reg [2:0] sample_cnt = 0;
-  reg [3:0] bit_cnt = 0;
-  reg [7:0] dout_reg = 0;
+  reg [2:0] sample_cnt;
+  reg [3:0] bit_cnt;
+  reg [7:0] dout_reg;
+  reg       dout_v_reg;
 
   // ILA //
   generate
@@ -50,7 +51,7 @@ module uart_receiver #(
   always @(posedge clk) begin
     rx_ff[SYNC_STAGES-1] <= rx;
 
-    for (sync_stage = 0; sync_stage < SYNC_STAGES-1; sync_stage = sync_stage + 1) begin
+    for (sync_stage = 0; sync_stage < SYNC_STAGES - 1; sync_stage = sync_stage + 1) begin
       rx_ff[sync_stage] <= rx_ff[sync_stage+1];
     end
 
@@ -141,7 +142,7 @@ module uart_receiver #(
   always @(posedge clk) begin
     if (state_reg == DATA) begin
       if (sample_cnt == 7) begin
-        dout_reg[bit_cnt] <= rx_sync;
+        dout_reg[bit_cnt[2:0]] <= rx_sync;
       end
     end
 
@@ -151,6 +152,20 @@ module uart_receiver #(
   end
 
   assign dout = dout_reg;
-  assign dout_v = bit_cnt == 8;
+
+  // Data Valid Gen //
+  always @(posedge clk) begin
+    dout_v_reg <= 0;
+
+    if ((state_reg == DATA) && (sample_cnt == 7) && (bit_cnt == 7)) begin
+      dout_v_reg <= 1;
+    end
+
+    if (!rstn) begin
+      dout_v_reg <= 0;
+    end
+  end
+
+  assign dout_v = dout_v_reg;
 
 endmodule

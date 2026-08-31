@@ -16,6 +16,13 @@ module tb_uart_transmitter;
   wire busy;
   wire tx;
 
+  // Waveform Output
+  initial begin
+    $dumpfile("wave.vcd");
+    $dumpvars(0, tb_uart_transmitter);
+  end
+
+  // DUT
   uart_transmitter #(
       .CLK_RATE (CLK_RATE),
       .BAUD_RATE(BAUD_RATE),
@@ -29,31 +36,36 @@ module tb_uart_transmitter;
       .tx(tx)
   );
 
-  // 96 MHz clock
+  // 96 MHz Clock
   initial begin
     clk = 0;
     forever #5.208 clk = ~clk;
   end
 
+  // Simulation
   initial begin
+    $display(">>> TESTBENCH STARTED <<<");
     rstn  = 0;
     start = 0;
     din   = 8'h00;
 
-    repeat (10) @(posedge clk);
+    repeat (5) @(posedge clk);
 
     rstn = 1;
+    $display(">>> RESET RELEASED <<<");
 
-    repeat (10) @(posedge clk);
+    repeat (5) @(posedge clk);
 
     din   = 8'hA5;
     start = 1;
     @(posedge clk);
     start = 0;
 
+    $display(">>> START PULSED, busy=%b <<<", busy);
+
     wait (!busy);
 
-    repeat (100) @(posedge clk);
+    repeat (10) @(posedge clk);
 
     $finish;
   end

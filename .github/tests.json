@@ -3,6 +3,8 @@
     "verif/cocotb/tests/basys3/fd_ss_driver/": ["basys3/fd_ss_driver"],
     "cores/basys3/led_shift_reg.v": ["basys3/led_shift_reg"],
     "verif/cocotb/tests/basys3/led_shift_reg/": ["basys3/led_shift_reg"],
+    "cores/common/sync_fifo.v": ["common/sync_fifo"],
+    "verif/cocotb/tests/common/sync_fifo/": ["common/sync_fifo"],
     "cores/vga/vga_core.v": ["vga"],
     "cores/vga/vga_double_framebuffer.v": ["vga"],
     "cores/vga/vga_pos_sync.v": ["vga"],
