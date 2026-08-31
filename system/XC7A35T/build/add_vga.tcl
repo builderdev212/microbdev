@@ -9,9 +9,9 @@ set proj_dir [get_property directory [current_project]]
 set obj [get_filesets sources_1]
 set verilog_files [list \
                     [file normalize "../../../cores/vga/vga_core.v"] \
-                    [file normalize "../../../cores/vga/vga_demo.v"] \
                     [file normalize "../../../cores/vga/vga_double_framebuffer.v"] \
                     [file normalize "../../../cores/vga/vga_pos_sync.v"] \
+                    [file normalize "../../../cores/vga/demo/vga_demo.v"] \
                   ]
 add_files -norecurse -fileset $obj $verilog_files
 set file_obj [get_files -of_objects [get_filesets sources_1] $verilog_files]
@@ -23,18 +23,18 @@ set_property -name "used_in_simulation" -value "1" -objects $file_obj
 if {[string equal [get_filesets -quiet vga_sim] ""]} {
   create_fileset -simset vga_sim
 }
+set obj [get_filesets vga_sim]
 set verilog_sim_files [list \
                     [file normalize "../../../cores/vga/tb/tb_vga_core.v"] \
                   ]
 add_files -norecurse -fileset $obj $verilog_sim_files
-set obj [get_filesets vga_sim]
 set_property -name "sim_wrapper_top" -value "1" -objects $obj
 set_property -name "top" -value "tb_vga_core" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
 
 set obj [get_filesets sources_1]
 set xci_files [list \
-                [file normalize "../../../cores/vga/ip/vga_clk_25_17007_pll.xci"] \
+                [file normalize "../../../cores/vga/ip/vga_clk_25_17007_pll/vga_clk_25_17007_pll.xci"] \
               ]
 add_files -norecurse -fileset $obj $xci_files
 set xci_obj [get_files -of_objects $obj $xci_files]
@@ -66,7 +66,10 @@ set_property {STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS} \
             -generic LED_COUNT=16 \
             -generic SWITCH_COUNT=16 \
             -generic INCLUDE_VGA=1 \
-            -generic INCLUDE_VGA_DEMO=1} \
+            -generic INCLUDE_VGA_DEMO=1 \
+            -generic INCLUDE_UART=0 \
+            -generic UART_TRANSMITTER_DEMO=0 \
+            -generic UART_LOOPBACK=0} \
     -objects [get_runs vga_synth]
 
 # Create 'vga_impl' run (if not found)

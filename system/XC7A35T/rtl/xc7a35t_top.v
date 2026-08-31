@@ -6,7 +6,10 @@ module xc7a35t_top #(
     parameter integer LED_COUNT = 16,
     parameter integer SWITCH_COUNT = 16,
     parameter integer INCLUDE_VGA = 1,
-    parameter integer INCLUDE_VGA_DEMO = 1
+    parameter integer INCLUDE_VGA_DEMO = 1,
+    parameter integer INCLUDE_UART = 1,
+    parameter integer UART_TRANSMITTER_DEMO = 0,
+    parameter integer UART_LOOPBACK = 1
 ) (
     input  wire                    clk,
     // Four Digit Seven Segment LED Display //
@@ -22,7 +25,10 @@ module xc7a35t_top #(
     output wire [             3:0] vga_green,
     output wire [             3:0] vga_blue,
     output wire                    vga_hsync,
-    output wire                    vga_vsync
+    output wire                    vga_vsync,
+    // UART //
+    input  wire                    uart_rx,
+    output wire                    uart_tx
 );
 
   // Global Reset Signals //
@@ -37,14 +43,19 @@ module xc7a35t_top #(
   assign fd_ss_decimal = 4'h0;
 
   // VGA Signals //
-  wire vga_clk;
-  wire vga_clk_locked;
-  wire vga_rstn;
+  wire       vga_clk;
+  wire       vga_clk_locked;
+  wire       vga_rstn;
   wire [7:0] vga_din;
-  wire vga_din_v;
-  wire vga_wstart;
-  wire vga_wready;
-  wire vga_wfinish;
+  wire       vga_din_v;
+  wire       vga_wstart;
+  wire       vga_wready;
+  wire       vga_wfinish;
+
+  // UART Signals //
+  wire       uart_clk;
+  wire       uart_clk_locked;
+  wire       uart_rstn;
 
   // LEDs //
   fd_ss_driver #(
@@ -114,6 +125,40 @@ module xc7a35t_top #(
             .wfinish(vga_wfinish)
         );
       end
+    end
+  endgenerate
+
+  // UART //
+  generate
+    if (INCLUDE_UART == 1) begin : gen_uart_core
+      uart_clk_96_pll uart_clk_inst (
+          .clk_in1 (clk),
+          .resetn  (global_rstn),
+          .locked  (uart_clk_locked),
+          .clk_out1(uart_clk)
+      );
+
+      assign uart_rstn = uart_clk_locked && global_rstn;
+
+      uart_core #(
+          .RX_SYNC_STAGES(2),
+          .CLK_RATE(96_000_000),
+          .BAUD_RATE(12_000_000),
+          .RX_ILA_EN(0),
+          .TX_ILA_EN(0),
+          .LOOPBACK_EN(UART_LOOPBACK),
+          .TRANSMITTER_DEMO_EN(UART_TRANSMITTER_DEMO)
+      ) uart_core_inst (
+          .clk(uart_clk),
+          .rstn(uart_rstn),
+          .din_start(),
+          .din(),
+          .din_busy(),
+          .dout(),
+          .dout_v(),
+          .rx(uart_rx),
+          .tx(uart_tx)
+      );
     end
   endgenerate
 

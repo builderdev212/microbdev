@@ -70,8 +70,8 @@ module vga_double_framebuffer #(
   endfunction
 
   reg [7:0] buff_ram [0:RAM_ADDR_CNT-1];
-  reg [RAM_ADDR_WIDTH-1:0] buff_wraddr = BUFF1_ADDR;
-  reg curr_buff = 0;
+  reg [RAM_ADDR_WIDTH-1:0] buff_wraddr;
+  reg curr_buff;
 
   // State Signals //
   localparam [1:0]
@@ -80,7 +80,7 @@ module vga_double_framebuffer #(
     BUFF_READY = 2,
     BUFF_WRITE = 3;
 
-  reg [1:0] state_reg = BUFF_CLEAR;
+  reg [1:0] state_reg;
 
   // Control FSM //
   always @(posedge clk) begin
@@ -135,11 +135,11 @@ module vga_double_framebuffer #(
     end
   end
 
-  assign wready = (state_reg == BUFF_READY) ? 1 : 0;
-  assign wfinish = (buff_wraddr == buff_ending_addr(curr_buff)) ? 1 : 0;
+  assign wready = state_reg == BUFF_READY;
+  assign wfinish = buff_wraddr == buff_ending_addr(curr_buff);
 
   // Swap Frame Control //
-  reg prev_buff = 0;
+  reg prev_buff;
   always @(posedge clk) begin
     if (state_reg == BUFF_SWAP) begin
       if (curr_buff == prev_buff) begin
@@ -152,7 +152,7 @@ module vga_double_framebuffer #(
   end
 
   // Color Output //
-  reg [7:0] color_reg = 0;
+  reg [7:0] color_reg;
 
   always @(posedge clk) begin
     if (valid_pos) begin

@@ -43,7 +43,10 @@ set_property {STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS} \
             -generic LED_COUNT=16 \
             -generic SWITCH_COUNT=16 \
             -generic INCLUDE_VGA=0 \
-            -generic INCLUDE_VGA_DEMO=0} \
+            -generic INCLUDE_VGA_DEMO=0 \
+            -generic INCLUDE_UART=0 \
+            -generic UART_TRANSMITTER_DEMO=0 \
+            -generic UART_LOOPBACK=0} \
     -objects [get_runs basys3_synth]
 
 # Create 'basys3_impl' run (if not found)

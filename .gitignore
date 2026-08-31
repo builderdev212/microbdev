@@ -2,3 +2,6 @@
 *.log
 *.jou
 *.gen
+*.venv
+*obj_dir
+*.vcd

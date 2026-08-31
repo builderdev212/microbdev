@@ -64,8 +64,8 @@ module vga_core (
   );
 
   // Sync Clocking //
-  reg hsync_reg = 0;
-  reg vsync_reg = 0;
+  reg hsync_reg;
+  reg vsync_reg;
 
   always @(posedge clk) begin
     hsync_reg <= hsync_w;
