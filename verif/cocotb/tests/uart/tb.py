@@ -29,7 +29,9 @@ class TB:
         self.rx_ila_en_param = int(os.environ.get("PARAM_RX_ILA_EN"))
         self.tx_ila_en_param = int(os.environ.get("PARAM_TX_ILA_EN"))
         self.loopback_en_param = int(os.environ.get("PARAM_LOOPBACK_EN"))
-        self.transmitter_demo_en_param = int(os.environ.get("PARAM_TRANSMITTER_DEMO_EN"))
+        self.transmitter_demo_en_param = int(
+            os.environ.get("PARAM_TRANSMITTER_DEMO_EN")
+        )
 
     def display_params(self):
         self.log.info("module parameters:")
@@ -75,7 +77,6 @@ class TB:
             await self.drive_bit((value >> bit_index) & 1)
         await self.drive_bit(1)
 
-
     async def expect_tx_byte(self, value):
         await with_timeout(FallingEdge(self.tx), 10 * self.bit_time_ns, "ns")
         for _ in range(8 // 2):
@@ -85,14 +86,13 @@ class TB:
         for bit_index in range(8):
             for _ in range(8):
                 await RisingEdge(self.clk)
-            assert int(self.tx.value) == ((value >> bit_index) & 1), (
-                f"TX bit {bit_index} was incorrect"
-            )
+            assert int(self.tx.value) == (
+                (value >> bit_index) & 1
+            ), f"TX bit {bit_index} was incorrect"
 
         for _ in range(8):
             await RisingEdge(self.clk)
         assert int(self.tx.value) == 1, "TX stop bit was not high"
-
 
     async def send_tx_byte(self, value):
         while int(self.din_busy.value):

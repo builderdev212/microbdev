@@ -26,9 +26,7 @@ async def receiver_accepts_lsb_first_frame(dut):
 
     expected = 0x53
     receiver = cocotb.start_soon(tb.drive_rx_byte(expected))
-    await with_timeout(
-        RisingEdge(tb.dout_v), 20 * tb.bit_time_ns, "ns"
-    )
+    await with_timeout(RisingEdge(tb.dout_v), 20 * tb.bit_time_ns, "ns")
     assert int(tb.dout.value) == expected
     await receiver
 
