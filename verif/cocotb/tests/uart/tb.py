@@ -3,7 +3,7 @@ import os
 
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge, FallingEdge
+from cocotb.triggers import FallingEdge, RisingEdge, with_timeout
 
 
 class TB:
@@ -17,7 +17,10 @@ class TB:
         self.get_signals()
         self.zero_input_signals()
 
-        cocotb.start_soon(Clock(self.clk, 2, unit="ns").start())
+        self.clk_period_ns = round(1e9 / self.clk_rate_param)
+        self.cycles_per_bit = int(self.clk_rate_param / self.baud_rate_param)
+        self.bit_time_ns = round(1e9 / self.baud_rate_param)
+        cocotb.start_soon(Clock(self.clk, self.clk_period_ns, unit="ns").start())
 
     def get_params(self):
         self.rx_sync_stages_param = int(os.environ.get("PARAM_RX_SYNC_STAGES"))
@@ -53,10 +56,48 @@ class TB:
         self.rstn.value = 1
         self.din_start.value = 0
         self.din.value = 0
-        self.rx = 1
+        self.rx.value = 1
 
     async def reset(self):
         await RisingEdge(self.clk)
         self.rstn.value = 0
         await RisingEdge(self.clk)
         self.rstn.value = 1
+
+    async def drive_bit(self, bit):
+        self.rx.value = bit
+        for _ in range(self.cycles_per_bit):
+            await RisingEdge(self.clk)
+
+    async def drive_rx_byte(self, value):
+        await self.drive_bit(0)
+        for bit_index in range(8):
+            await self.drive_bit((value >> bit_index) & 1)
+        await self.drive_bit(1)
+
+
+    async def expect_tx_byte(self, value):
+        await with_timeout(FallingEdge(self.tx), 10 * self.bit_time_ns, "ns")
+        for _ in range(8 // 2):
+            await RisingEdge(self.clk)
+        assert int(self.tx.value) == 0, "TX start bit was not low"
+
+        for bit_index in range(8):
+            for _ in range(8):
+                await RisingEdge(self.clk)
+            assert int(self.tx.value) == ((value >> bit_index) & 1), (
+                f"TX bit {bit_index} was incorrect"
+            )
+
+        for _ in range(8):
+            await RisingEdge(self.clk)
+        assert int(self.tx.value) == 1, "TX stop bit was not high"
+
+
+    async def send_tx_byte(self, value):
+        while int(self.din_busy.value):
+            await RisingEdge(self.clk)
+        self.din.value = value
+        self.din_start.value = 1
+        await RisingEdge(self.clk)
+        self.din_start.value = 0

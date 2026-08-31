@@ -2,15 +2,50 @@ import os
 import shutil
 import pytest
 import cocotb
-from cocotb.triggers import RisingEdge
+from cocotb.triggers import RisingEdge, with_timeout
 from cocotb_tools.runner import get_runner
 from filelock import FileLock
 from tb import TB
 
 
+@cocotb.test()
+async def transmitter_sends_8n1_frame(dut):
+    tb = TB(dut)
+    await tb.reset()
+
+    observed = cocotb.start_soon(tb.expect_tx_byte(0xA6))
+    await tb.send_tx_byte(0xA6)
+    await observed
+    assert int(dut.din_busy.value) == 0
+
+
+@cocotb.test()
+async def receiver_accepts_lsb_first_frame(dut):
+    tb = TB(dut)
+    await tb.reset()
+
+    expected = 0x53
+    receiver = cocotb.start_soon(tb.drive_rx_byte(expected))
+    await with_timeout(
+        RisingEdge(tb.dout_v), 20 * tb.bit_time_ns, "ns"
+    )
+    assert int(tb.dout.value) == expected
+    await receiver
+
+
+@cocotb.test()
+async def test_loopback_returns_received_byte(dut):
+    tb = TB(dut)
+    await tb.reset()
+
+    expected = 0xC9
+    observed = cocotb.start_soon(tb.expect_tx_byte(expected))
+    await tb.drive_rx_byte(expected)
+    await observed
+
 
 tests_dir = os.path.abspath(os.path.dirname(__file__))
-base_dir = os.path.abspath(os.path.join(tests_dir, "..", "..", "..", "..", ".."))
+base_dir = os.path.abspath(os.path.join(tests_dir, "..", "..", "..", ".."))
 rtl_dir = os.path.abspath(os.path.join(base_dir, "cores", "uart"))
 common_dir = os.path.abspath(os.path.join(base_dir, "cores", "common"))
 dut = "uart_core"
@@ -18,6 +53,9 @@ dut = "uart_core"
 
 _BUILT_BUILDS = {}
 COCOTB_TESTCASES = [
+    # "transmitter_sends_8n1_frame",
+    # "receiver_accepts_lsb_first_frame",
+    "test_loopback_returns_received_byte",
 ]
 PARAMETER_SETS = [
     {
@@ -27,7 +65,7 @@ PARAMETER_SETS = [
         "BAUD_RATE": 12000000,
         "RX_ILA_EN": 0,
         "TX_ILA_EN": 0,
-        "LOOPBACK_EN": 0,
+        "LOOPBACK_EN": 1,
         "TRANSMITTER_DEMO_EN": 0,
     },
 ]
